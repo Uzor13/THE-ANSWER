@@ -8,20 +8,8 @@ const mongoSession = require("connect-mongodb-session")(session);
 const cors = require("cors");
 const helmet = require("helmet");
 const PORT = process.env.PORT || 4000;
-
 const adminRoutes = require("./routes/adminRoutes");
 const userRoutes = require("./routes/userRoutes");
-
-//middlewares
-app.use(cors());
-app.use(helmet());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(express.json());
-mongoose.set("useFindAndModify", false);
-mongoose.set("useCreateIndex", true);
-mongoose.set("useUnifiedTopology", true);
-mongoose.set("useNewUrlParser", true);
 
 //session CONFIG
 const store = new mongoSession({
@@ -29,6 +17,12 @@ const store = new mongoSession({
   collection: "sessions",
 });
 
+//middlewares
+app.use(cors());
+app.use(helmet());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.json());
 app.use(
   session({
     secret: "this is a secret",
@@ -38,7 +32,12 @@ app.use(
     expires: new Date(Date.now() + 30 * 86400 * 1),
   })
 );
+mongoose.set("useFindAndModify", false);
+mongoose.set("useCreateIndex", true);
+mongoose.set("useUnifiedTopology", true);
+mongoose.set("useNewUrlParser", true);
 
+//Connect to DB
 (async function () {
   try {
     await mongoose.connect(process.env.DB_URL);
@@ -49,6 +48,7 @@ app.use(
   }
 })();
 
+// routers
 app.use("/admin", adminRoutes.router);
 app.use("/", userRoutes.router);
 
