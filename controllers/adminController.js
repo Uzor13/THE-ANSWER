@@ -39,10 +39,10 @@ module.exports = {
 
   //LOGIN USER LOGIC
   loginAmin: async (req, res) => {
-    const { name, password } = req.body;
+    const { email, password } = req.body;
 
     try {
-      const findUser = await Admin.adminModel.findOne({ name });
+      const findUser = await Admin.adminModel.findOne({ email });
       //console.log(findUser)
       if (!findUser) {
         return res.status(404).json({
@@ -61,7 +61,7 @@ module.exports = {
         console.log(id);
         //console.log(req.session.user._id);
         res.status(200).json({
-          user: findUser.firstname,
+          user: findUser.email,
           msg: "successfully logged in",
         });
       } else {
