@@ -150,6 +150,17 @@ module.exports = {
     });
   },
 
+  getTeams: async (req, res)=>{
+    Team.teamModel.find({}, (err, foundData) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send();
+      } else {
+        res.send(foundData);
+      }
+    });
+  },
+
   getTeamPlayers: async (req, res) => {
     const teamName = req.body;
     const teamDetails = await Team.teamModel.find({ name: teamName });

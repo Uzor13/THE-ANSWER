@@ -6,6 +6,7 @@ const adminController = require("../controllers/adminController");
 router.get("/allPlayers", adminController.getAllPlayers);
 router.get("/fixtures", adminController.getFixtures);
 router.get("/teamplayers/:teamName", adminController.getTeamPlayers);
+router.get("/teams", adminController.getTeams);
 router.get("/logout", adminController.logoutAdmin);
 
 router.post("/register", adminController.createAdmin);
