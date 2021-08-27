@@ -9,7 +9,7 @@ module.exports = {
   createAdmin: async (req, res) => {
     const admin = new Admin.adminModel();
     const { firstname, lastname, email, password } = req.body;
-    // console.log(password);
+
     admin.firstname = firstname;
     admin.lastname = lastname;
     admin.email = email;
@@ -22,7 +22,6 @@ module.exports = {
       console.log("error", error);
     }
 
-    // save new admin to DB
     admin.save((err, savedObject) => {
       if (err) {
         console.log(err);
@@ -37,13 +36,13 @@ module.exports = {
     });
   },
 
-  //LOGIN USER LOGIC
+  //LOGIN USER
   loginAmin: async (req, res) => {
     const { email, password } = req.body;
 
     try {
       const findUser = await Admin.adminModel.findOne({ email });
-      //console.log(findUser)
+
       if (!findUser) {
         return res.status(404).json({
           login: "false",
@@ -53,13 +52,10 @@ module.exports = {
       const isMatch = await bcrypt.compare(password, findUser.password);
 
       if (isMatch) {
-        //console.log(findUser)
         req.session.isLoggedIn = true;
         req.session.user = findUser;
         req.session.save();
         let id = req.session.id;
-        console.log(id);
-        //console.log(req.session.user._id);
         res.status(200).json({
           user: findUser.email,
           msg: "successfully logged in",
@@ -99,22 +95,24 @@ module.exports = {
         res.status(500).send();
       } else {
         res.send(foundData);
-        //console.log(foundData);
       }
     });
   },
 
   addPlayer: async (req, res) => {
     const person = new Player.playerModel();
+    const {
+      firstname,
+      lastname,
+      age,
+      height,
+      gender,
+      hometown,
+      playerNumber,
+      team,
+    } = req.body;
 
-    person.firstName = req.body.firstname;
-    person.lastName = req.body.lastname;
-    person.age = req.body.age;
-    person.height = req.body.height;
-    person.gender = req.body.gender;
-    person.hometown = req.body.hometown;
-    person.playerNumber = req.body.playerNumber;
-    const findTeam = await Team.teamModel.findOne({ name: req.body.team });
+    const findTeam = await Team.teamModel.findOne({ name: team });
     if (!findTeam) {
       return res.status(404).json({
         added: "false",
@@ -140,9 +138,7 @@ module.exports = {
 
   addTeam: async (req, res) => {
     const team = new Team.teamModel();
-    team.name = req.body.name;
-    team.logo = req.body.logo;
-    //team.players = await Player.playerModel.find();
+    const { name, logo } = req.body;
 
     team.save((err, savedObject) => {
       if (err) {
@@ -150,22 +146,19 @@ module.exports = {
         res.status(500).send();
       } else {
         res.send(savedObject);
-        //console.log(savedObject);
       }
     });
   },
 
   getTeamPlayers: async (req, res) => {
-    const teamName = req.params.teamName;
+    const teamName = req.body;
     const teamDetails = await Team.teamModel.find({ name: teamName });
-    console.log(teamDetails);
+
     Player.playerModel.find({ team: teamName }, (err, foundData) => {
       if (err) {
         console.log(err);
         res.status(500).send();
       } else {
-        //res.send(foundData);
-        //console.log(foundData);
         res.status(200).json({
           players: foundData,
           team: teamDetails,
@@ -176,19 +169,14 @@ module.exports = {
 
   addFixtures: async (req, res) => {
     const fixture = new Fixtures.fixturesModel();
-    fixture.venue = req.body.venue;
-    fixture.hometeam = req.body.hometeam;
-    fixture.awayteam = req.body.awayteam;
-    fixture.date = req.body.date;
-    fixture.time = req.body.time;
 
+    const { venue, hometeam, awayteam, date, time } = req.body;
     fixture.save((err, savedObject) => {
       if (err) {
         console.log(err);
         res.status(500).send();
       } else {
         res.send(savedObject);
-        // console.log(savedObject);
       }
     });
   },
@@ -214,7 +202,6 @@ module.exports = {
     const id = req.params.id;
     Player.playerModel.findOneAndRemove({ _id: id }, (err) => {
       if (err) {
-        // console.log(err);
         res.status(500).send();
       }
       res.write("delete successfull");

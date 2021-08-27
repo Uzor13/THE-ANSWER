@@ -9,7 +9,6 @@ module.exports = {
         res.status(500).send();
       } else {
         res.send(foundData);
-        //console.log(foundData);
       }
     });
   },
@@ -17,11 +16,9 @@ module.exports = {
   getFixtures: async (req, res) => {
     Fixtures.fixturesModel.find({}, (err, foundData) => {
       if (err) {
-        // console.log(err);
         res.status(500).send();
       } else {
         res.send(foundData);
-        // console.log(foundData);
       }
     });
   },
