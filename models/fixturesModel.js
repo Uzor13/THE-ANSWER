@@ -8,6 +8,8 @@ const fixturesSchema = mongoose.Schema({
   awayteam: String,
   hometeamScore: Number,
   awayteamScore: Number,
+  hometeamLogo: String,
+  awayteamLogo: String
 });
 
 const fixturesModel = mongoose.model("fixtures", fixturesSchema);

@@ -5,7 +5,7 @@ const Admin = require("../models/adminModel");
 const bcrypt = require("bcrypt");
 
 module.exports = {
-  // REGISTER USER
+  // REGISTER ADMIN
   createAdmin: async (req, res) => {
     const admin = new Admin.adminModel();
     const { firstname, lastname, email, password } = req.body;
@@ -15,7 +15,7 @@ module.exports = {
     admin.email = email;
     const suppliedPassword = password;
 
-    // hash Userpassword
+    // HASH PASSWORD
     try {
       admin.password = await bcrypt.hash(suppliedPassword, 10);
     } catch (error) {
@@ -36,7 +36,7 @@ module.exports = {
     });
   },
 
-  //LOGIN USER
+  //LOGIN ADMIN
   loginAmin: async (req, res) => {
     const { email, password } = req.body;
 
@@ -75,6 +75,7 @@ module.exports = {
     }
   },
 
+  // LOGOUT ADMIN
   logoutAdmin: async (req, res) => {
     req.session.destroy((err) => {
       if (err) {
@@ -109,19 +110,19 @@ module.exports = {
       gender,
       hometown,
       playerNumber,
-      team,
+      email,
+      img,
     } = req.body;
-
-    const findTeam = await Team.teamModel.findOne({ name: team });
-    if (!findTeam) {
-      return res.status(404).json({
-        added: "false",
-        message:
-          "no team like that, create one before adding player to the team",
-      });
-    }
-    //person.team = await Team.teamModel.findOne({ name: req.body.team });
-    person.team = req.body.team;
+    
+    person.firstName = firstname;
+    person.lastName = lastname;
+    person.email = email;
+    person.playerNumber = playerNumber;
+    person.age = age;
+    person.gender = gender;
+    person.height = height;
+    person.hometown = hometown;
+    person.img = img;
 
     person.save((err, savedObject) => {
       if (err) {
@@ -136,52 +137,30 @@ module.exports = {
 
   updatePlayer: async (req, res) => {},
 
-  addTeam: async (req, res) => {
-    const team = new Team.teamModel();
-    const { name, logo } = req.body;
-
-    team.save((err, savedObject) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send();
-      } else {
-        res.send(savedObject);
-      }
-    });
-  },
-
-  getTeams: async (req, res)=>{
-    Team.teamModel.find({}, (err, foundData) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send();
-      } else {
-        res.send(foundData);
-      }
-    });
-  },
-
-  getTeamPlayers: async (req, res) => {
-    const teamName = req.body;
-    const teamDetails = await Team.teamModel.find({ name: teamName });
-
-    Player.playerModel.find({ team: teamName }, (err, foundData) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send();
-      } else {
-        res.status(200).json({
-          players: foundData,
-          team: teamDetails,
-        });
-      }
-    });
-  },
 
   addFixtures: async (req, res) => {
     const fixture = new Fixtures.fixturesModel();
-
-    const { venue, hometeam, awayteam, date, time } = req.body;
+    const {
+      venue,
+      hometeam,
+      awayteam,
+      date,
+      time,
+      hometeamLogo,
+      awayteamLogo,
+      hometeamScore,
+      awayteamScore
+    } = req.body;
+    fixture.venue = venue;
+    fixture.date = date;
+    fixture.time = time;
+    fixture.hometeam = hometeam;
+    fixture.awayteam = awayteam;
+    fixture.hometeamLogo = hometeamLogo;
+    fixture.awayteamLogo = awayteamLogo;
+    fixture.hometeamScore = hometeamScore;
+    fixture.awayteamScore = awayteamScore;
+    // SAVE FIXTURE
     fixture.save((err, savedObject) => {
       if (err) {
         console.log(err);
@@ -203,11 +182,6 @@ module.exports = {
       }
     });
   },
-
-  // updateFixtures: async (req, res)=>{
-  //   const id = req.params.id
-  //   Fixtures.fixturesModel.findById()
-  // },
 
   deletePlayer: async (req, res) => {
     const id = req.params.id;

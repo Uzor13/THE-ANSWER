@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 
 const playerSchema = mongoose.Schema({
+  email: {type: String, unique:true},
   firstName: { type: String },
   lastName: String,
   playerNumber: Number,
-  age: String,
+  age: Number,
   gender: String,
   height: String,
   hometown: String,
-  team: String,
-  img: String,
+  img: String, 
 });
 
 const playerModel = mongoose.model("player", playerSchema);
