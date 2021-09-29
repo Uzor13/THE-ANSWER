@@ -95,7 +95,7 @@ module.exports = {
         console.log(err);
         res.status(500).send();
       } else {
-        res.send(foundData);
+        res.status(200).send(foundData);
       }
     });
   },
@@ -129,8 +129,8 @@ module.exports = {
         console.log(err);
         res.status(500).send();
       } else {
-        console.log(savedObject);
-        res.send(savedObject);
+        //console.log(savedObject);
+        res.status(201).send(savedObject);
       }
     });
   },
@@ -163,10 +163,10 @@ module.exports = {
     // SAVE FIXTURE
     fixture.save((err, savedObject) => {
       if (err) {
-        console.log(err);
+        //console.log(err);
         res.status(500).send();
       } else {
-        res.send(savedObject);
+        res.status(201).send(savedObject);
       }
     });
   },
