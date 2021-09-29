@@ -27,10 +27,10 @@ module.exports = {
         console.log(err);
         res.status(500).send();
       } else {
-        console.log(savedObject);
         //res.redirect("/login");
-        res.status(200).json({
+        res.status(201).json({
           msg: "successfully created account",
+          data: savedObject,
         });
       }
     });
@@ -42,6 +42,7 @@ module.exports = {
 
     try {
       const findUser = await Admin.adminModel.findOne({ email });
+      console.log(findUser);
 
       if (!findUser) {
         return res.status(404).json({
@@ -56,21 +57,21 @@ module.exports = {
         req.session.user = findUser;
         req.session.save();
         let id = req.session.id;
-        res.status(200).json({
+        return res.status(200).json({
           user: findUser.email,
           msg: "successfully logged in",
         });
       } else {
         return res.status(404).json({
           login: "false",
-          message: "invalid username or password",
+          message: "invalid username or password ",
         });
       }
     } catch (error) {
       return res.json({
         login: false,
         message:
-          "sorry cant log you in at this time contact ed_knowah or precious for assistance",
+          "sorry can't log you in at this time contact ed_knowah or precious for assistance",
       });
     }
   },
@@ -113,7 +114,7 @@ module.exports = {
       email,
       img,
     } = req.body;
-    
+
     person.firstName = firstname;
     person.lastName = lastname;
     person.email = email;
@@ -137,7 +138,6 @@ module.exports = {
 
   updatePlayer: async (req, res) => {},
 
-
   addFixtures: async (req, res) => {
     const fixture = new Fixtures.fixturesModel();
     const {
@@ -149,7 +149,7 @@ module.exports = {
       hometeamLogo,
       awayteamLogo,
       hometeamScore,
-      awayteamScore
+      awayteamScore,
     } = req.body;
     fixture.venue = venue;
     fixture.date = date;
